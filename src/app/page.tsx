@@ -1,12 +1,17 @@
-import Image from "next/image";
 import styles from "./page.module.scss";
-import SearchForm from "./components/SearchForm";
+import Map from "@/app/components/Map";
+import { LocationProvider } from "@/app/context/LocationContext";
+import Sidebar from "@/app/components/Sidebar";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <SearchForm />
-      <div> </div>
-    </div>
+    // Wrap the components that need access to the location state
+    // with the LocationProvider.
+    <LocationProvider>
+      <main className={styles.page}>
+        <Sidebar />
+        <Map />
+      </main>
+    </LocationProvider>
   );
 }

@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "./SearchForm.module.scss";
-
+import styles from "./searchForm.module.scss";
 import { FaSearch } from "react-icons/fa";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
