@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useLocation } from "@/app/context/LocationContext";
 import styles from "./searchForm.module.scss";
 import { FaSearch } from "react-icons/fa";
 import Box from "@mui/joy/Box";
@@ -11,35 +13,51 @@ import FormHelperText from "@mui/joy/FormHelperText";
 import IconButton from "@mui/joy/IconButton";
 import Input from "@mui/joy/Input";
 import Stack from "@mui/joy/Stack";
+import CircularProgress from "@mui/joy/CircularProgress";
+
+interface FormData {
+  location?: string;
+  lat?: number;
+  lng?: number;
+  date: string;
+}
 
 function SearchForm() {
+  const { selectedLocation, setSelectedLocation } = useLocation();
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [errors, setErrors] = useState({ location: "", date: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  // Clear the other location input when one is used
+  useEffect(() => {
+    if (selectedLocation) {
+      setLocation("");
+    }
+  }, [selectedLocation]);
+
+  const handleLocationInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setLocation(e.target.value);
+    if (selectedLocation) {
+      setSelectedLocation(null);
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent the default form submission behavior
 
     const newErrors = { location: "", date: "" };
     let hasError = false;
 
-    if (!location) {
-      newErrors.location = "Por favor, insira um local.";
-      hasError = true;
-    }
+    const now = new Date();
+    const selectedDateTime = new Date(date);
 
-    if (!date) {
-      newErrors.date = "Por favor, selecione uma data.";
+    if (selectedDateTime < now) {
+      newErrors.date =
+        "A data e hora não podem ser anteriores à data e hora atuais.";
       hasError = true;
-    } else {
-      const today = new Date();
-      today.setUTCHours(0, 0, 0, 0); // Set to midnight UTC
-      const selectedDate = new Date(date); // Input 'YYYY-MM-DD' is parsed as UTC midnight
-
-      if (selectedDate < today) {
-        newErrors.date = "A data não pode ser anterior à data atual.";
-        hasError = true;
-      }
     }
 
     setErrors(newErrors);
@@ -49,11 +67,29 @@ function SearchForm() {
       return;
     }
 
-    const formData = {
-      location,
-      date,
-    };
-    console.log("Form Data Submitted:", formData);
+    setIsLoading(true);
+    try {
+      let formData: FormData = {
+        date,
+      };
+
+      if (selectedLocation) {
+        // Use coordinates from the map
+        formData = { ...formData, ...selectedLocation };
+      } else {
+        // Use the named location string
+        formData = { ...formData, location };
+      }
+
+      const response = await axios.post("/api/analyse-weather", formData);
+      console.log("API Response:", response.data);
+      // TODO: Handle the successful response and display the weather data
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      // TODO: Display an error message to the user
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -65,18 +101,13 @@ function SearchForm() {
       onSubmit={handleSubmit}
     >
       <Stack spacing={3}>
-        <FormControl error={!!errors.location}>
+        <FormControl disabled={isLoading} error={!!errors.location}>
           <FormLabel>Selecione o local</FormLabel>
           <Input
             id="location"
             placeholder="Cidade, parque..."
             value={location}
-            onChange={(e) => {
-              setLocation(e.target.value);
-              if (errors.location) {
-                setErrors((prev) => ({ ...prev, location: "" }));
-              }
-            }}
+            onChange={handleLocationInputChange}
             endDecorator={
               <IconButton aria-label="search location">
                 <FaSearch />
@@ -88,11 +119,11 @@ function SearchForm() {
           )}
         </FormControl>
 
-        <FormControl error={!!errors.date}>
+        <FormControl disabled={isLoading} error={!!errors.date}>
           <FormLabel>Data da aventura</FormLabel>
           <Input
             id="adventure-date"
-            type="date"
+            type="datetime-local"
             value={date}
             onChange={(e) => {
               setDate(e.target.value);
@@ -106,6 +137,8 @@ function SearchForm() {
 
         <Button
           type="submit"
+          disabled={(!location && !selectedLocation) || !date || isLoading}
+          startDecorator={isLoading && <CircularProgress size="sm" />}
           sx={{
             mt: "1rem",
             backgroundColor: "var(--color-primary-500)",
