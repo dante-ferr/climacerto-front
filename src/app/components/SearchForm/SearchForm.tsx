@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, use } from "react";
 import axios from "axios";
-import { useLocation } from "@/app/context/LocationContext";
+import { FaMountain, FaShoppingBasket, FaUmbrellaBeach } from "react-icons/fa";
+import { WeatherAnalysis, useLocation } from "@/app/context/LocationContext";
 import styles from "./searchForm.module.scss";
 import { FaSearch } from "react-icons/fa";
 import Box from "@mui/joy/Box";
@@ -14,12 +15,14 @@ import IconButton from "@mui/joy/IconButton";
 import Input from "@mui/joy/Input";
 import Stack from "@mui/joy/Stack";
 import CircularProgress from "@mui/joy/CircularProgress";
+import ToggleButtonGroup from "@mui/joy/ToggleButtonGroup";
 
 interface FormData {
   location?: string;
   latitude?: number;
   longitude?: number;
   date: string;
+  activityId: string;
 }
 
 function SearchForm() {
@@ -29,6 +32,7 @@ function SearchForm() {
   const [date, setDate] = useState("");
   const [errors, setErrors] = useState({ location: "", date: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [activity, setActivity] = useState("praia");
 
   // Clear the other location input when one is used
   useEffect(() => {
@@ -72,6 +76,7 @@ function SearchForm() {
     try {
       let formData: FormData = {
         date,
+        activityId: activity,
       };
       let analyzeEndpoint;
 
@@ -129,6 +134,29 @@ function SearchForm() {
           {errors.location && (
             <FormHelperText>{errors.location}</FormHelperText>
           )}
+        </FormControl>
+
+        <FormControl disabled={isLoading}>
+          <FormLabel>Atividade</FormLabel>
+          <ToggleButtonGroup
+            value={activity}
+            onChange={(event, newValue) => {
+              if (newValue) {
+                setActivity(newValue);
+              }
+            }}
+            sx={{ gap: 1.5, width: "100%", "& > *": { flex: 1 } }}
+          >
+            <Button value="praia" startDecorator={<FaUmbrellaBeach />}>
+              Praia
+            </Button>
+            <Button value="trilha" startDecorator={<FaMountain />}>
+              Trilha
+            </Button>
+            <Button value="piquenique" startDecorator={<FaShoppingBasket />}>
+              Piquenique
+            </Button>
+          </ToggleButtonGroup>
         </FormControl>
 
         <FormControl disabled={isLoading} error={!!errors.date}>
