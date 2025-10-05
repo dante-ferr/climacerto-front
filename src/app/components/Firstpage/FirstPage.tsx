@@ -1,10 +1,7 @@
 "use client"
 //import Script from "next/script";
 //import { useRef } from "react";
-import { useState } from "react";
-import { useLocation } from "@/app/context/LocationContext";
 import styles from "./firstpage.module.scss";
-import type L from "leaflet"; 
 function anotherpage(){alert("abacaxi")};
 export default function Firstpage(){
 return (
@@ -18,29 +15,17 @@ return (
 	<div className={styles.middle_upperPart}>
 			<div className={styles.grid}>
 					<div className={styles.middlePart_square}>
-						<h4>Dados da nasa</h4>
-						<p>Utilizamos dados históricos de observação da Terra da Nasa para análise precisa</p>
-					</div>
-					<div className={styles.middlePart_square}>
 						<h4>Probablidades climáticas</h4>
 						<p>Calcule as Probablidades de condições adversas para seu local e data</p>
 					</div>
 					<div className={styles.middlePart_square}>
 						<h4>Múltiplas Variáveis</h4>
-						<p>Analise temperatura, precipitação, vento, umidade e qualidade do ar</p>
+						<p>Analise temperatura, precipitação, vento, umidade e qualidade do ar.</p>
 					</div>
 
 					<div className={styles.middlePart_square}>
 						<h4>Qualquer Localização</h4>
 						<p>Selecione qualquer ponto no mapa ou digite o nome do local</p>
-					</div>
-					<div className={styles.middlePart_square}>
-						<h4>Tendências Históricas</h4>
-						<p>Veja como as condições mudaram ao longo das décadas</p>
-					</div>
-					<div className={styles.middlePart_square}>
-						<h4>Sugestões Inteligentes</h4>
-						<p>IA recomenda locais alternativos quando o clima não está ideal</p>
 					</div>
 			</div>
 		</div>
