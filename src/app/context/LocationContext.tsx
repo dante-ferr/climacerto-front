@@ -1,46 +1,57 @@
 "use client";
 
-import {
-  createContext,
-  useState,
-  useContext,
-  Dispatch,
-  SetStateAction,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
-// Define the shape of the location data
-export interface Location {
+interface Location {
   lat: number;
   lng: number;
 }
 
-// Define the shape of the context value
-interface LocationContextType {
-  selectedLocation: Location | null;
-  setSelectedLocation: Dispatch<SetStateAction<Location | null>>;
+export interface WeatherAnalysis {
+  score: number;
+  qualitative: string;
+  color: string;
+  pros: string[];
+  cons: string[];
+  trendAlert: string;
 }
 
-// 1. Create the context with a default value.
-// This will hold the location state and the function to update it.
-const LocationContext = createContext<LocationContextType>({
-  selectedLocation: null,
-  setSelectedLocation: () => {},
-});
+interface LocationContextType {
+  selectedLocation: Location | null;
+  setSelectedLocation: (location: Location | null) => void;
+  weatherAnalysis: WeatherAnalysis | null;
+  setWeatherAnalysis: (analysis: WeatherAnalysis | null) => void;
+}
 
-// 2. Create a custom hook for easier access to the context.
-export const useLocation = () => useContext(LocationContext);
+const LocationContext = createContext<LocationContextType | undefined>(
+  undefined
+);
 
-// 3. Create the Provider component.
-// This component will wrap your page and manage the state.
-export const LocationProvider = ({ children }: { children: ReactNode }) => {
+export function LocationProvider({ children }: { children: ReactNode }) {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
   );
+  const [weatherAnalysis, setWeatherAnalysis] =
+    useState<WeatherAnalysis | null>(null);
 
   return (
-    <LocationContext.Provider value={{ selectedLocation, setSelectedLocation }}>
+    <LocationContext.Provider
+      value={{
+        selectedLocation,
+        setSelectedLocation,
+        weatherAnalysis,
+        setWeatherAnalysis,
+      }}
+    >
       {children}
     </LocationContext.Provider>
   );
-};
+}
+
+export function useLocation() {
+  const context = useContext(LocationContext);
+  if (context === undefined) {
+    throw new Error("useLocation must be used within a LocationProvider");
+  }
+  return context;
+}

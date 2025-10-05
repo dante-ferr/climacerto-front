@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import axios from "axios";
 import { useLocation } from "@/app/context/LocationContext";
 import styles from "./searchForm.module.scss";
@@ -17,13 +17,14 @@ import CircularProgress from "@mui/joy/CircularProgress";
 
 interface FormData {
   location?: string;
-  lat?: number;
-  lng?: number;
+  latitude?: number;
+  longitude?: number;
   date: string;
 }
 
 function SearchForm() {
-  const { selectedLocation, setSelectedLocation } = useLocation();
+  const { selectedLocation, setSelectedLocation, setWeatherAnalysis } =
+    useLocation();
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [errors, setErrors] = useState({ location: "", date: "" });
@@ -72,18 +73,29 @@ function SearchForm() {
       let formData: FormData = {
         date,
       };
+      let analyzeEndpoint;
 
       if (selectedLocation) {
         // Use coordinates from the map
-        formData = { ...formData, ...selectedLocation };
+        formData = {
+          ...formData,
+          latitude: selectedLocation.lat,
+          longitude: selectedLocation.lng,
+        };
+        analyzeEndpoint = "coords";
       } else {
         // Use the named location string
         formData = { ...formData, location };
+        analyzeEndpoint = "name";
       }
 
-      const response = await axios.post("/api/analyse-weather", formData);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/analyze/${analyzeEndpoint}`,
+        { params: formData }
+      );
+
       console.log("API Response:", response.data);
-      // TODO: Handle the successful response and display the weather data
+      setWeatherAnalysis(response.data);
     } catch (error) {
       console.error("Error submitting form:", error);
       // TODO: Display an error message to the user
