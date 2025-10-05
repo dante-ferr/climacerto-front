@@ -21,6 +21,8 @@ interface LocationContextType {
   setSelectedLocation: (location: Location | null) => void;
   weatherAnalysis: WeatherAnalysis | null;
   setWeatherAnalysis: (analysis: WeatherAnalysis | null) => void;
+  error: string | null;
+  setError: (error: string | null) => void;
 }
 
 const LocationContext = createContext<LocationContextType | undefined>(
@@ -33,6 +35,7 @@ export function LocationProvider({ children }: { children: ReactNode }) {
   );
   const [weatherAnalysis, setWeatherAnalysis] =
     useState<WeatherAnalysis | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <LocationContext.Provider
@@ -41,6 +44,8 @@ export function LocationProvider({ children }: { children: ReactNode }) {
         setSelectedLocation,
         weatherAnalysis,
         setWeatherAnalysis,
+        error,
+        setError,
       }}
     >
       {children}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaMountain, FaShoppingBasket, FaUmbrellaBeach } from "react-icons/fa";
 import { WeatherAnalysis, useLocation } from "@/app/context/LocationContext";
@@ -27,8 +27,12 @@ interface FormData {
 }
 
 function SearchForm() {
-  const { selectedLocation, setSelectedLocation, setWeatherAnalysis } =
-    useLocation();
+  const {
+    selectedLocation,
+    setSelectedLocation,
+    setWeatherAnalysis,
+    setError,
+  } = useLocation();
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [errors, setErrors] = useState({ location: "", date: "" });
@@ -53,6 +57,9 @@ function SearchForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent the default form submission behavior
+    // Clear previous results and errors
+    setWeatherAnalysis(null);
+    setError(null);
 
     const newErrors = { location: "", date: "" };
     let hasError = false;
@@ -102,8 +109,13 @@ function SearchForm() {
       console.log("API Response:", response.data);
       setWeatherAnalysis(response.data);
     } catch (error) {
-      console.error("Error submitting form:", error);
-      // TODO: Display an error message to the user
+      let errorMessage = "An unexpected error occurred. Please try again.";
+      if (axios.isAxiosError(error) && error.response) {
+        errorMessage =
+          error.response.data.message || "Error fetching weather analysis.";
+      }
+      console.error("Error submitting form:", error); // Keep for debugging
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
