@@ -27,9 +27,6 @@ function WeatherAnalysisDisplay({ analysis }: WeatherAnalysisDisplayProps) {
         backgroundColor: "transparent",
       }}
     >
-      {/* <Typography level="h4" component="h2" sx={{}}>
-        Análise do Clima
-      </Typography> */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
         <Typography level="h1" sx={{ mr: 2 }}>
           {analysis.score}

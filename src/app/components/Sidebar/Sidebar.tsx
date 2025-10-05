@@ -22,14 +22,18 @@ function Sidebar() {
       {selectedLocation && (
         <Box sx={{ mt: "auto" }}>
           <Divider sx={{ mb: 2 }} />
-          <Typography level="title-lg" component="h2" sx={{ mb: 1 }}>
-            Localização Selecionada
+          <Typography
+            level="title-lg"
+            component="h2"
+            sx={{ mb: 1, fontWeight: "bold" }}
+          >
+            Selected Location
           </Typography>
           <Typography level="body-sm">
-            Latitude: {selectedLocation.lat.toFixed(4)}
+            Latitude: {selectedLocation.lat.toFixed(4)}{" "}
           </Typography>
           <Typography level="body-sm">
-            Longitude: {selectedLocation.lng.toFixed(4)}
+            Longitude: {selectedLocation.lng.toFixed(4)}{" "}
           </Typography>
         </Box>
       )}

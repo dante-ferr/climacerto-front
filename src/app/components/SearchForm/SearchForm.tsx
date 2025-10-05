@@ -4,7 +4,7 @@ import React, { useState, useEffect, use } from "react";
 import axios from "axios";
 import { FaMountain, FaShoppingBasket, FaUmbrellaBeach } from "react-icons/fa";
 import { WeatherAnalysis, useLocation } from "@/app/context/LocationContext";
-import styles from "./searchForm.module.scss";
+
 import { FaSearch } from "react-icons/fa";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -16,6 +16,7 @@ import Input from "@mui/joy/Input";
 import Stack from "@mui/joy/Stack";
 import CircularProgress from "@mui/joy/CircularProgress";
 import ToggleButtonGroup from "@mui/joy/ToggleButtonGroup";
+import styles from "./searchForm.module.scss";
 
 interface FormData {
   location?: string;
@@ -60,8 +61,7 @@ function SearchForm() {
     const selectedDateTime = new Date(date);
 
     if (selectedDateTime < now) {
-      newErrors.date =
-        "A data e hora não podem ser anteriores à data e hora atuais.";
+      newErrors.date = "The date and time cannot be in the past.";
       hasError = true;
     }
 
@@ -119,10 +119,10 @@ function SearchForm() {
     >
       <Stack spacing={3}>
         <FormControl disabled={isLoading} error={!!errors.location}>
-          <FormLabel>Selecione o local</FormLabel>
+          <FormLabel>Select location</FormLabel>
           <Input
             id="location"
-            placeholder="Cidade, parque..."
+            placeholder="City, park..."
             value={location}
             onChange={handleLocationInputChange}
             endDecorator={
@@ -137,7 +137,7 @@ function SearchForm() {
         </FormControl>
 
         <FormControl disabled={isLoading}>
-          <FormLabel>Atividade</FormLabel>
+          <FormLabel>Activity</FormLabel>
           <ToggleButtonGroup
             value={activity}
             onChange={(event, newValue) => {
@@ -148,19 +148,19 @@ function SearchForm() {
             sx={{ gap: 1.5, width: "100%", "& > *": { flex: 1 } }}
           >
             <Button value="praia" startDecorator={<FaUmbrellaBeach />}>
-              Praia
+              Beach
             </Button>
             <Button value="trilha" startDecorator={<FaMountain />}>
-              Trilha
+              Trail
             </Button>
             <Button value="piquenique" startDecorator={<FaShoppingBasket />}>
-              Piquenique
+              Picnic
             </Button>
           </ToggleButtonGroup>
         </FormControl>
 
         <FormControl disabled={isLoading} error={!!errors.date}>
-          <FormLabel>Data da aventura</FormLabel>
+          <FormLabel>Date of the adventure</FormLabel>
           <Input
             id="adventure-date"
             type="datetime-local"
@@ -187,7 +187,7 @@ function SearchForm() {
             },
           }}
         >
-          Analisar Clima
+          Analyze Climate
         </Button>
       </Stack>
     </Box>
