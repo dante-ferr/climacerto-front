@@ -130,7 +130,7 @@ function SearchForm() {
       onSubmit={handleSubmit}
     >
       <Stack spacing={3}>
-        <FormControl disabled={isLoading} error={!!errors.location}>
+        {/* <FormControl disabled={isLoading} error={!!errors.location}>
           <FormLabel>Select location</FormLabel>
           <Input
             id="location"
@@ -146,7 +146,7 @@ function SearchForm() {
           {errors.location && (
             <FormHelperText>{errors.location}</FormHelperText>
           )}
-        </FormControl>
+        </FormControl> */}
 
         <FormControl disabled={isLoading}>
           <FormLabel>Activity</FormLabel>
