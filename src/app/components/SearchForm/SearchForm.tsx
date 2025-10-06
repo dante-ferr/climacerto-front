@@ -19,7 +19,7 @@ import ToggleButtonGroup from "@mui/joy/ToggleButtonGroup";
 import styles from "./searchForm.module.scss";
 
 interface FormData {
-  location?: string;
+  name?: string;
   latitude?: number;
   longitude?: number;
   date: string;
@@ -97,7 +97,7 @@ function SearchForm() {
         analyzeEndpoint = "coords";
       } else {
         // Use the named location string
-        formData = { ...formData, location };
+        formData = { ...formData, name: location };
         analyzeEndpoint = "name";
       }
 
